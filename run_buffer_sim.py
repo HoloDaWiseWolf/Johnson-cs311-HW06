@@ -1,4 +1,10 @@
 """
+name: persephone
+class:cs311
+assignment: lab6
+date: 9/28/2026
+"""
+"""
 Lab 6: The Threaded Buffer -- starter + simulator + verification (single file).
 
 Fix the race condition in OrderQueue below. Do NOT change anything
@@ -45,16 +51,18 @@ class OrderQueue:
     def __init__(self) -> None:
         self._items = []
         # TODO: self._lock = threading.Lock()
-
+        self._lock = threading.Lock()
     def enqueue(self, item) -> None:
         # TODO: wrap this in `with self._lock:`
-        self._items.append(item)
+        with self._lock:
+            self._items.append(item)
 
     def dequeue(self):
         # TODO: wrap this whole method body in `with self._lock:`
-        if len(self._items) == 0:
-            raise QueueEmptyError("queue is empty")
-        time.sleep(0)  # deliberate -- see class docstring. Do not remove.
+        with self._lock:
+            if len(self._items) == 0:
+                raise QueueEmptyError("queue is empty")
+            time.sleep(0)  # deliberate -- see class docstring. Do not remove.
         return self._items.pop(0)
 
     def __len__(self) -> int:
